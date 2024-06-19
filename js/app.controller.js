@@ -86,6 +86,7 @@ function onSearchAddress(ev) {
     const el = document.querySelector('[name=address]')
     mapService.lookupAddressGeo(el.value)
         .then(geo => {
+            console.log('Geo coordinates:', geo)
             mapService.panTo(geo)
         })
         .catch(err => {
