@@ -47,7 +47,17 @@
                             <option value="name">Name</option>
                             <option value="rate" selected>Rate</option>
                         </select>
-                        <label>
+                        <div>
+                            <label>
+                                Date:
+                                <select name="filter-by-date" onchange="app.onSetFilterBy({date: this.value})">
+                                    <option value="all">All</option>
+                                    <option value="today">Today</option>
+                                    <option value="past">Past</option>
+                                    <option value="never">Never</option>
+                                </select>
+                            </label>
+                        </div>
                             <input class="sort-desc" type="checkbox" oninput="app.onSetSortBy()" />
                             Descending
                         </label>

@@ -18,7 +18,7 @@ import { storageService } from './async-storage.service.js'
 const PAGE_SIZE = 5
 const DB_KEY = 'locs'
 var gSortBy = { rate: -1 }
-var gFilterBy = { txt: '', minRate: 0 }
+var gFilterBy = { txt: '', minRate: 0, date: 'all' }
 var gPageIdx
 
 _createLocs()
@@ -43,21 +43,36 @@ function query() {
             if (gFilterBy.minRate) {
                 locs = locs.filter(loc => loc.rate >= gFilterBy.minRate)
             }
-
-            // No paging (unused)
+            if (gFilterBy.date) {
+                const now = new Date()
+                locs = locs.filter(loc => {
+                    const locDate = new Date(loc.date)
+                    switch (gFilterBy.date) {
+                        case 'today':
+                            return locDate.toDateString() === now.toDateString()
+                        case 'past':
+                            return !loc.date
+                        case 'never':
+                            return locDate < now
+                        default:
+                            return true
+                    }
+                });
+            }
+            
             if (gPageIdx !== undefined) {
-                const startIdx = gPageIdx * PAGE_SIZE
-                locs = locs.slice(startIdx, startIdx + PAGE_SIZE)
+                const startIdx = gPageIdx * PAGE_SIZE;
+                locs = locs.slice(startIdx, startIdx + PAGE_SIZE);
             }
 
             if (gSortBy.rate !== undefined) {
-                locs.sort((p1, p2) => (p1.rate - p2.rate) * gSortBy.rate)
+                locs.sort((p1, p2) => (p1.rate - p2.rate) * gSortBy.rate);
             } else if (gSortBy.name !== undefined) {
-                locs.sort((p1, p2) => p1.name.localeCompare(p2.name) * gSortBy.name)
+                locs.sort((p1, p2) => p1.name.localeCompare(p2.name) * gSortBy.name);
             }
 
-            return locs
-        })
+            return locs;
+        });
 }
 
 function getById(locId) {
@@ -81,6 +96,7 @@ function save(loc) {
 function setFilterBy(filterBy = {}) {
     if (filterBy.txt !== undefined) gFilterBy.txt = filterBy.txt
     if (filterBy.minRate !== undefined && !isNaN(filterBy.minRate)) gFilterBy.minRate = filterBy.minRate
+    if (filterBy.date !== undefined) gFilterBy.date = filterBy.date
     return gFilterBy
 }
 
