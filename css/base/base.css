@@ -21,10 +21,10 @@ input[type=text],input[type=number] {
 }
 
 button {
-    color: whitesmoke;
+    color: black;
     border: 0;
     border-radius: .2em;
-    background-color: #222;
+    background-color: white;
     padding: 6px 10px;
     margin: 2px;
     cursor: pointer;
